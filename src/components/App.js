@@ -10,9 +10,11 @@ import NewOutflow from "./NewOutflow";
 
 export default function App() {
     const [token, setToken] = useState('');
+    const [registersList, setRegistersList] = useState([]);
+    const [balance, setBalance] = useState('');
 
     return (
-        <UserContext.Provider value={{token, setToken}}>
+        <UserContext.Provider value={{token, setToken, registersList, setRegistersList, balance, setBalance}}>
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<SignIn />} />
