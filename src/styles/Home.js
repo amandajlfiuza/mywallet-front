@@ -23,7 +23,7 @@ const Title = styled.div`
 
 const CashFlow = styled.div`
     width: 100%;
-    height: 66%;
+    height: 60%;
     padding-left: 13px;
     padding-right: 13px;
     padding-top: 23px;
@@ -46,10 +46,17 @@ const AlertText = styled.div`
     text-align: center;
 `;
 
+const Registers = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+`;
+
 const Register = styled.div`
     display: flex;
     justify-content: start;
     align-items: center;
+    margin-bottom: 10px;
 `;
 
 const Date = styled.div`
@@ -109,10 +116,16 @@ const Buttons = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    a {
+        text-decoration: none;
+        width: 47.5%;
+        height: 100%;
+    }
 `;
 
 const ButtonNewRegistry = styled.div`
-    width: 47.5%;
+    width: 100%;
     height: 100%;
     padding: 9px;
     background-color: #A328D6;
@@ -136,4 +149,4 @@ const RegistryTitle = styled.div`
     color: white;
 `;
 
-export { Navbar, Title, CashFlow, AlertText, Register, Date, DescriptionWrapper, Description, Amount, Balance, TitleBalance, AmountBalance, Buttons, ButtonNewRegistry, RegistryTitle };
+export { Navbar, Title, CashFlow, AlertText, Registers, Register, Date, DescriptionWrapper, Description, Amount, Balance, TitleBalance, AmountBalance, Buttons, ButtonNewRegistry, RegistryTitle };

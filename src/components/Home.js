@@ -1,58 +1,98 @@
-import { Navbar, Title, CashFlow, AlertText, Register, Date, DescriptionWrapper, Description, Amount, Balance, TitleBalance, AmountBalance, Buttons, ButtonNewRegistry, RegistryTitle } from '../styles/Home';
-import { useContext } from 'react';
+import { 
+    Navbar, 
+    Title, 
+    CashFlow, 
+    AlertText, 
+    Registers, 
+    Register, 
+    Date, 
+    DescriptionWrapper, 
+    Description, 
+    Amount, 
+    Balance, 
+    TitleBalance, 
+    AmountBalance, 
+    Buttons, 
+    ButtonNewRegistry, 
+    RegistryTitle } from '../styles/Home';
+import { useContext, useEffect } from 'react';
 import UserContext from '../contexts/UserContext';
+import { getBalance, getCashFlow, logOut, updateStatus } from '../api/API';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Home() {
-    // const { token, registersList, setRegistersList, balance, setBalance } = useContext(UserContext);
+    const { 
+        token,
+        username,
+        setUsername,
+        registersList,
+        setRegistersList,
+        balance,
+        setBalance } = useContext(UserContext);
+        const navigate = useNavigate();
 
-    const registersList = [
-        {
-            type: 'outflow',
-            date: '30/11',
-            description: 'Almoço mãe',
-            amount: '39,90'
-        }
-    ]
+    useEffect(() => {
+        getCashFlow(token).then((res) => {
+            setRegistersList(res.data.registers);
+            setUsername(res.data.user.name);
+        });
 
-    const balance = 2849.96;
+        getBalance(token).then((res) => {
+            setBalance(res.data.balance);
+        });
+
+        updateStatus(token).then(() => {});
+    }, []);
+
+    function requestLogout () {
+        logOut(token).then(() => {
+            navigate('/');
+        });
+    }
 
     return (
         <>
             <Navbar>
-                <Title>Olá, fulano</Title>
-                <ion-icon name="exit-outline"></ion-icon>
+                <Title>Olá, {username}</Title>
+                <ion-icon name="exit-outline" onClick={requestLogout}></ion-icon>
             </Navbar>
             <CashFlow noregister={registersList.length === 0}>
-                {registersList.length === 0 
-                    ? <AlertText>Não há registros de entrada ou saída</AlertText>
-                    : registersList.map(register => (
-                        <Register>
-                            <Date>{register.date}</Date>
-                            <DescriptionWrapper>
-                                <Description>{register.description}</Description>
-                                <Amount type={register.type}>{register.amount}</Amount>
-                            </DescriptionWrapper>
-                        </Register>
-                    ))}
+                <Registers noregister={registersList.length === 0}>
+                    {registersList.length === 0 
+                        ? <AlertText>Não há registros de entrada ou saída</AlertText>
+                        : registersList.map(register => (
+                            <Register key={register._id}>
+                                <Date>{register.date}</Date>
+                                <DescriptionWrapper>
+                                    <Description>{register.description}</Description>
+                                    <Amount type={register.type}>{register.amount.replace('.',',')}</Amount>
+                                </DescriptionWrapper>
+                            </Register>
+                        ))}
+                </Registers>
                 {registersList.length === 0 
                     ? ""
                     : <Balance>
                         <TitleBalance>SALDO</TitleBalance>
                         <AmountBalance 
                             isPositive={balance === Math.abs(balance)}
-                        >{Math.abs(balance)}</AmountBalance>
+                        >{Math.abs(balance).toFixed(2).replace('.',',')}</AmountBalance>
                     </Balance>
                     }
             </CashFlow>
             <Buttons>
-                <ButtonNewRegistry>
-                    <ion-icon name="add-circle-outline"></ion-icon>
-                    <RegistryTitle>Nova entrada</RegistryTitle>
-                </ButtonNewRegistry>
-                <ButtonNewRegistry>
-                    <ion-icon name="remove-circle-outline"></ion-icon>
-                    <RegistryTitle>Nova saída</RegistryTitle>
-                </ButtonNewRegistry>
+                <Link to='/newinflow'>
+                    <ButtonNewRegistry>
+                        <ion-icon name="add-circle-outline"></ion-icon>
+                        <RegistryTitle>Nova entrada</RegistryTitle>
+                    </ButtonNewRegistry>
+                </Link>
+                <Link to='/newoutflow'>
+                    <ButtonNewRegistry>
+                        <ion-icon name="remove-circle-outline"></ion-icon>
+                        <RegistryTitle>Nova saída</RegistryTitle>
+                    </ButtonNewRegistry>
+                </Link>
             </Buttons>
         </>
     )

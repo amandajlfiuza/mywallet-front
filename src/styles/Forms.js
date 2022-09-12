@@ -13,6 +13,10 @@ const LoginWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    a {
+        text-decoration: none;
+    }
 `;
 
 const NewDataWrapper = styled.div`
@@ -67,8 +71,8 @@ const Input = styled.input`
     padding: 15px;
     margin-bottom: 13px;
     border-radius: 5px;
-    background-color: white;
-    border: none;
+    border: ${props => props.isInvalid ? '2px solid #D14539' : 'none'};
+    background-color: ${props => props.isInvalid ? '#FFEFEF' : 'white'};
     display: flex;
     align-items: center;
 
